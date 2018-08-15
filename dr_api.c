@@ -147,13 +147,20 @@ void dr_interface_changed(unsigned intf, int state_changed, int cost_changed) {
 */
 struct route_t * dr_routing_table_init()
 {
-        fprintf(stdout,"Performing routing table initialization");
+        fprintf(stdout,"Performing routing table initialization\n");
         if (dr_interface_count() <=0)
                 return NULL;
         else
         {
                 lvns_interface_t interface_0 = dr_get_interface(0);
-                return NULL;
+                route_t *route_table_head = (route_t*) malloc(sizeof(route_t));
+		route_table_head->subnet = interface_0.ip & interface_0.subnet_mask;
+		route_table_head->next_hop_ip = 0;
+		route_table_head->outgoing_intf=0;
+		route_table_head->cost = interface_0.cost;
+		route_table_head->is_garbage = 0;
+		route_table_head->next = NULL;
+		return route_table_head;
         }
 }
 
@@ -187,7 +194,7 @@ void dr_init(unsigned (*func_dr_interface_count)(),
 
     /* do initialization of your own data structures here */
     route_t *rtable_head = dr_routing_table_init();
-    
+    route_t *rtable_current = rtable_head;    
 }
 
 next_hop_t safe_dr_get_next_hop(uint32_t ip) {
