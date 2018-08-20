@@ -9,3 +9,29 @@ Performing routing table initializationconnection closed by server
 ******** Starting new dr instance ********
 connected to the LVNS server
 ******** Starting new dr instance ********
+connected to the LVNS server
+Performing routing table initializationconnection closed by server
+******** Starting new dr instance ********
+******** Starting new dr instance ********
+connected to the LVNS server
+connected to the LVNS server
+Performing routing table initialization
+Subnet 	 Next Hop IP 	 Outgoing Interface 	 Cost 	 
+6311458 	 0 	 0 	 1 	connection closed by server
+******** Starting new dr instance ********
+connected to the LVNS server
+Performing routing table initialization
+Subnet 	 Next Hop IP 	 Outgoing Interface 	 Cost 	 
+6311458 	 0 	 0 	 1 	connection closed by server
+******** Starting new dr instance ********
+connected to the LVNS server
+Performing routing table initialization
+Subnet 	 Next Hop IP 	 Outgoing Interface 	 Cost 	 
+6311458 	 0 	 0 	 1 	
+connection closed by server
+******** Starting new dr instance ********
+connected to the LVNS server
+Performing routing table initialization
+Subnet 	 Next Hop IP 	 Outgoing Interface 	 Cost 	 
+6311458 	 0 	 0 	 1 	
+connection closed by server

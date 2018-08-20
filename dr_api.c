@@ -145,6 +145,38 @@ void dr_interface_changed(unsigned intf, int state_changed, int cost_changed) {
         Instantiates the routing table with the interface 0's entries.
         Returns NULL if there are no interfaces
 */
+void dump_routing_table(route_t *rtable_head)
+{
+	route_t *curr = rtable_head;
+	fprintf(stdout,"Subnet \t Next Hop IP \t Outgoing Interface \t Cost \t \n");
+	while(curr!=NULL)
+	{
+		fprintf(stdout,"%d \t %d \t %d \t %d \t\n",curr->subnet,curr->next_hop_ip,curr->outgoing_intf,curr->cost);
+		curr = curr->next;
+	}
+}
+
+void init_directly_conn_networks(route_t *rtable_curr)
+{
+	int interface_iter;
+	if(dr_interface_count() <=0)
+		return ;
+	else
+	{
+		for(interface_iter = 1;interface_iter<dr_interface_count();interface_iter++)
+		{
+			lvns_interface_t interface_curr = dr_get_interface(interface_iter);
+			route_t * route_table_entry = (route_t*) malloc(sizeof(route_t));
+			route_table_entry->subnet = interface_curr.ip & interface_curr.subnet_mask;
+			route_table_entry->next_hop_ip = 0;
+			route_table_entry->outgoing_intf = 0;
+			route_table_entry->cost = interface_curr.cost;
+			route_table_entry->is_garbage=0;
+			route_table_entry->next=NULL;
+			rtable_curr->next = route_table_entry;	
+		}
+	}
+}
 struct route_t * dr_routing_table_init()
 {
         fprintf(stdout,"Performing routing table initialization\n");
@@ -194,7 +226,9 @@ void dr_init(unsigned (*func_dr_interface_count)(),
 
     /* do initialization of your own data structures here */
     route_t *rtable_head = dr_routing_table_init();
-    route_t *rtable_current = rtable_head;    
+    route_t *rtable_current = rtable_head;
+    dump_routing_table(rtable_head);
+    init_directly_conn_networks(rtable_current);
 }
 
 next_hop_t safe_dr_get_next_hop(uint32_t ip) {
