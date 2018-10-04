@@ -141,17 +141,19 @@ void dr_interface_changed(unsigned intf, int state_changed, int cost_changed) {
 
 /* ****** It is recommended that you only modify code below this line! ****** */
 
-/**
-        Instantiates the routing table with the interface 0's entries.
-        Returns NULL if there are no interfaces
-*/
+char* print_ip(int ip)
+{
+	struct in_addr ip_addr;
+    	ip_addr.s_addr = ip;
+	return inet_ntoa(ip_addr);
+}
 void dump_routing_table(route_t *rtable_head)
 {
 	route_t *curr = rtable_head;
 	fprintf(stdout,"Subnet \t Next Hop IP \t Outgoing Interface \t Cost \t \n");
 	while(curr!=NULL)
 	{
-		fprintf(stdout,"%d \t %d \t %d \t %d \t\n",curr->subnet,curr->next_hop_ip,curr->outgoing_intf,curr->cost);
+		fprintf(stdout,"%s \t %s \t %d \t %d \t\n",print_ip(curr->subnet),print_ip(curr->next_hop_ip),curr->outgoing_intf,curr->cost);
 		curr = curr->next;
 	}
 }
@@ -180,7 +182,7 @@ void  dr_routing_table_init(route_t *route_table_head)
 			}
 			lvns_interface_t interface_curr = dr_get_interface(interface_iter);
 			route_table_entry->subnet = interface_curr.ip & interface_curr.subnet_mask;
-			route_table_entry->next_hop_ip = 0;
+			route_table_entry->next_hop_ip = 000000;
 			route_table_entry->outgoing_intf = interface_iter;
 			route_table_entry->cost = interface_curr.cost;
 			route_table_entry->is_garbage=0;
