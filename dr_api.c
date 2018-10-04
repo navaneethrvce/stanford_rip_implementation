@@ -156,43 +156,36 @@ void dump_routing_table(route_t *rtable_head)
 	}
 }
 
-void init_directly_conn_networks(route_t *rtable_curr)
+void  dr_routing_table_init(route_t *route_table_head)
 {
+        fprintf(stdout,"Performing routing table initialization\n");
 	int interface_iter;
-	if(dr_interface_count() <=0)
-		return ;
-	else
-	{
-		for(interface_iter = 1;interface_iter<dr_interface_count();interface_iter++)
+	route_t *route_table_entry;
+        if (dr_interface_count() <=0)
+                return ;
+        else
+        {
+		route_t *curr_pointer = route_table_head;
+		for(interface_iter = 0;interface_iter<dr_interface_count();interface_iter++)
 		{
+			if(interface_iter != 0)
+			{
+				route_table_entry = (route_t*) malloc(sizeof(route_t));
+				curr_pointer->next= route_table_entry;
+				curr_pointer = route_table_entry;
+			}
+			else
+			{
+				route_table_entry = curr_pointer; 
+			}
 			lvns_interface_t interface_curr = dr_get_interface(interface_iter);
-			route_t * route_table_entry = (route_t*) malloc(sizeof(route_t));
 			route_table_entry->subnet = interface_curr.ip & interface_curr.subnet_mask;
 			route_table_entry->next_hop_ip = 0;
-			route_table_entry->outgoing_intf = 0;
+			route_table_entry->outgoing_intf = interface_iter;
 			route_table_entry->cost = interface_curr.cost;
 			route_table_entry->is_garbage=0;
 			route_table_entry->next=NULL;
-			rtable_curr->next = route_table_entry;	
 		}
-	}
-}
-struct route_t * dr_routing_table_init()
-{
-        fprintf(stdout,"Performing routing table initialization\n");
-        if (dr_interface_count() <=0)
-                return NULL;
-        else
-        {
-                lvns_interface_t interface_0 = dr_get_interface(0);
-                route_t *route_table_head = (route_t*) malloc(sizeof(route_t));
-		route_table_head->subnet = interface_0.ip & interface_0.subnet_mask;
-		route_table_head->next_hop_ip = 0;
-		route_table_head->outgoing_intf=0;
-		route_table_head->cost = interface_0.cost;
-		route_table_head->is_garbage = 0;
-		route_table_head->next = NULL;
-		return route_table_head;
         }
 }
 
@@ -225,10 +218,13 @@ void dr_init(unsigned (*func_dr_interface_count)(),
     }
 
     /* do initialization of your own data structures here */
-    route_t *rtable_head = dr_routing_table_init();
-    route_t *rtable_current = rtable_head;
-    dump_routing_table(rtable_head);
-    init_directly_conn_networks(rtable_current);
+    //route_t *rtable_head = dr_routing_table_init();
+    //route_t *rtable_current = rtable_head;
+    //dump_routing_table(rtable_head);
+    //init_directly_conn_networks(rtable_current);
+    route_t *route_table_head = (route_t*) malloc(sizeof(route_t));
+    dr_routing_table_init(route_table_head);
+    dump_routing_table(route_table_head);
 }
 
 next_hop_t safe_dr_get_next_hop(uint32_t ip) {
